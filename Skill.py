@@ -1,5 +1,7 @@
 
 from enum import Enum
+from Trait import LivingTrait, UndeadTrait
+from Element import ShadowElement, MentalElement
 
 class SkillType(Enum):
     ACTIVE = "ACTIVE"
@@ -43,20 +45,16 @@ class Skill:
 class NecromancySkill(Skill):
     def __init__(self):
         super().__init__(SkillType.DOMAIN)
+        self.linked_elements = [(ShadowElement, 1.0)]  # Compétence principale liée à Mental
 
 # Compétence dépendante du domaine de Nécromancie
 class RiseUndeadSkill(Skill):
     def __init__(self):
         super().__init__(SkillType.ACTIVE, is_dodgeable=False)
         self.required_skills = [NecromancySkill]
-        self.linked_elements = []  # Ajout manuel dans la suite du code
-
-    def activate(self, caster, target):
-        from Trait import LivingTrait, UndeadTrait
-        from Element import ShadowElement, MentalElement
-
         self.linked_elements = [(ShadowElement, 0.75), (MentalElement, 0.25)]
 
+    def activate(self, caster, target):
         success_chance = self.calculate_success_chance(caster, target)
         if success_chance > 0:
             if any(isinstance(t, LivingTrait) for t in target.traits):
@@ -73,45 +71,65 @@ class RiseUndeadSkill(Skill):
                 print(f"{target.species} ne peut pas être relevé — Ce n'est pas une créature vivante !")
         else:
             print(f"{caster.species} échoue à relever {target.species} comme mort-vivant !")
-            self.raise_skill_xp(10)  # ✅ 10% du gain d'XP en cas d'échec
+            self.raise_skill_xp(10)  # 10% du gain d'XP en cas d'échec
             for req in self.required_skills:
                 for skill in caster.skills:
                     if isinstance(skill, req):
-                        skill.raise_skill_xp(1)  # ✅ 10% du bonus dans les compétences liées
+                        skill.raise_skill_xp(1)  # 10% du bonus dans les compétences liées
 
-# Compétence de peur (50% Ombre, 50% Mental)
-class FearSkill(NecromancySkill):
+# Compétence dépendante du domaine de Psychomancie
+class PsychomancySkill(Skill):
     def __init__(self):
-        super().__init__()
-        self.is_dodgeable = False
-        self.linked_elements = []
+        super().__init__(SkillType.DOMAIN)
+        self.linked_elements = [(MentalElement, 1.0)]  
+
+class FearSkill(Skill):
+    def __init__(self):
+        super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        self.required_skills = [PsychomancySkill]  
+        self.linked_elements = [(MentalElement, 1.0)]  
 
     def activate(self, caster, target):
-        from Element import ShadowElement, MentalElement
-
-        self.linked_elements = [(ShadowElement, 0.5), (MentalElement, 0.5)]
-
         success_chance = self.calculate_success_chance(caster, target)
+
         if success_chance > 0:
-            print(f"{caster.species} effraie {target.species} avec succès !")
-            self.raise_skill_xp(100)  # Gain d'XP en cas de succès
+            print(f"{target.species} est terrifié par {caster.species} et tente de fuir !")
+            self.raise_skill_xp(100)
             for req in self.required_skills:
                 for skill in caster.skills:
                     if isinstance(skill, req):
-                        skill.raise_skill_xp(10)  # Bonus dans les compétences liées
+                        skill.raise_skill_xp(10)
         else:
             print(f"{caster.species} échoue à effrayer {target.species} !")
-            self.raise_skill_xp(10)  # ✅ 10% du gain d'XP en cas d'échec
+            self.raise_skill_xp(10)
+
+class ConfusionSkill(Skill):
+    def __init__(self):
+        super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        self.required_skills = [PsychomancySkill]  
+        self.linked_elements = [(MentalElement, 0.5), (ShadowElement, 0.5)]  # 50/50 Ombre et Mental
+
+    def activate(self, caster, target):
+        success_chance = self.calculate_success_chance(caster, target)
+        
+        if success_chance > 0:
+            print(f"{target.species} est confusé par {caster.species} !")
+            self.raise_skill_xp(100)
             for req in self.required_skills:
                 for skill in caster.skills:
                     if isinstance(skill, req):
-                        skill.raise_skill_xp(1)  # ✅ 10% du bonus dans les compétences liées
+                        skill.raise_skill_xp(10)
+        else:
+            print(f"{caster.species} échoue à confondre {target.species} !")
+            self.raise_skill_xp(10)
 
 # Enum pour gérer les compétences par référence
 class SkillEnum(Enum):
     NECROMANCY = NecromancySkill
+    PSYCHOMANCY = PsychomancySkill
     RISE_UNDEAD = RiseUndeadSkill
     FEAR = FearSkill
+    CONFUSION = ConfusionSkill
 
     @property
     def skill_class(self):
