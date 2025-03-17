@@ -94,7 +94,7 @@ class Creature(BaseStats, DerivedStats):
     
     def afficher_stats(self):
         stats = f"""
-        {self.species} - Vie : {self.stats.vie:.2f}/{self.stats.vie_max:.2f}, Énergie : {self.stats.energie:.2f}/{self.stats.energie_max:.2f},
+        {self.species} - Vie : {self.stats.vie:.2f}/{self.stats.vie_max:.2f}, Endurance : {self.stats.endurance:.2f}/{self.stats.endurance_max:.2f}, Mana : {self.stats.mana:.2f}/{self.stats.mana_max:.2f},
         Taille : {self.size.name}, Esquive : {self.stats.esquive:.2f}, Précision : {self.stats.accuracy:.2f}, Rapidité : {self.stats.attack_speed:.2f}
         Traits : {', '.join([trait.name for trait in self.traits]) or 'Aucun'}
         Compétences : {', '.join([skill.name for skill in self.skills]) or 'Aucune'}
@@ -130,6 +130,10 @@ class Creature(BaseStats, DerivedStats):
         self.skills.append(skill)
 
     def send_attack(self, target):
+        if self.stats.endurance < 2:
+            print(f"{self.species} est trop fatigué pour attaquer !")
+            return
+        self.stats.endurance -= 2
         # Vérification de la chance de l'attaquant (1% par point de chance)
         if random.randint(1, 100) <= self.stats.chance:
             print(f"{self.species} réussit une attaque critique grâce à sa chance !")
@@ -156,7 +160,12 @@ class Creature(BaseStats, DerivedStats):
         skill_type = skill_enum.skill_class
         for skill in self.skills:
             if isinstance(skill, skill_type):
+                if self.stats.mana < skill.mana_cost or self.stats.endurance < skill.endurance_cost:
+                    print(f"{self.species} n'a pas assez de ressources pour utiliser {skill_enum.name}")
+                    return
                 print(f"{self.species} → Lance {skill.name} à {target.species}")
+                self.stats.mana -= skill.mana_cost
+                self.stats.endurance -= skill.endurance_cost
                 skill.activate(self, target)
                 effect = skill.get_effect()
                 if effect:

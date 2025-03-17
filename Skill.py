@@ -11,13 +11,15 @@ class SkillType(Enum):
 
 class Skill:
     name = "Skill"
-    def __init__(self, skill_type: SkillType, is_dodgeable=True):
+    def __init__(self, skill_type: SkillType, mana_cost=0,endurance_cost=0, is_dodgeable=True):
         self.skill_type = skill_type
         self.skill_level = 1
         self.skill_experience = 0
         self.required_skills = []
         self.is_dodgeable = is_dodgeable
         self.linked_elements = []  # (element, weight)
+        self.mana_cost = mana_cost
+        self.endurance_cost = endurance_cost
 
     def xp_required_for_next_level(self):
         return int(100 * (1.5 ** self.skill_level))
@@ -57,7 +59,7 @@ class NecromancySkill(Skill):
 # Compétence dépendante du domaine de Nécromancie
 class RiseUndeadSkill(Skill):
     def __init__(self):
-        super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        super().__init__(SkillType.ACTIVE,mana_cost=10, is_dodgeable=False)
         self.name = "Lever des morts"
         self.required_skills = [NecromancySkill]
         self.linked_elements = [(ShadowElement, 0.75), (MentalElement, 0.25)]
@@ -94,7 +96,7 @@ class PsychomancySkill(Skill):
 
 class FearSkill(Skill):
     def __init__(self):
-        super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        super().__init__(SkillType.ACTIVE,mana_cost=10, is_dodgeable=False)
         self.name = "Effroi"
         self.required_skills = [PsychomancySkill]  
         self.linked_elements = [(MentalElement, 1.0)]  
@@ -119,7 +121,7 @@ class FearSkill(Skill):
     
 class ConfusionSkill(Skill):
     def __init__(self):
-        super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        super().__init__(SkillType.ACTIVE,mana_cost=10, is_dodgeable=False)
         self.name = "Perte de repères"
         self.required_skills = [PsychomancySkill]  
         self.linked_elements = [(MentalElement, 0.5), (ShadowElement, 0.5)]  # 50/50 Ombre et Mental
@@ -152,7 +154,7 @@ class PyromancySkill(Skill):
     
 class BurnSkill(Skill):
     def __init__(self):
-        super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        super().__init__(SkillType.ACTIVE, mana_cost=5,is_dodgeable=False)
         self.name = "Brûlure"
         self.required_skills = [PyromancySkill]  
         self.linked_elements = [(FireElement, 1)] 

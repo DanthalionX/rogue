@@ -15,9 +15,13 @@ class DerivedStats:
         self.vie_max = round(self.creature.constitution * 5, 2)
         self.vie = self.vie_max
 
-        # Énergie max basée sur l'érudition
-        self.energie_max = round(self.creature.erudition * 5, 2)
-        self.energie = self.energie_max
+        # Mana max basée sur l'érudition
+        self.mana_max = round(self.creature.erudition * 5, 2)
+        self.mana = self.mana_max
+
+        # Endurance max basée sur la constitution et l'agilite
+        self.endurance_max = round((self.creature.constitution * 2 + self.creature.agilite) * 2)
+        self.endurance = self.endurance_max
 
         # Vitesse d'attaque basée sur l'agilité
         self.attack_speed = round(max(0.5, (self.creature.agilite / 20) * 2.0), 2)
