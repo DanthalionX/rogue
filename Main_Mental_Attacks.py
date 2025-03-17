@@ -25,5 +25,13 @@ def main():
     # Le Psycomancien attaque la créature vivante avec la compétence Confusion
     psychomancer.cast_skill(SkillEnum.CONFUSION, living_creature)
 
+    living_creature.afficher_stats()
+    
+    for _ in range(10):
+    # ✅ Mise à jour explicite des effets dans le gestionnaire
+            living_creature.status_effect_manager.update_effects()
+
+    living_creature.afficher_stats()
+
 if __name__ == "__main__":
     main()

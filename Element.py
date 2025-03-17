@@ -1,8 +1,9 @@
 from enum import Enum
 
 class Element:
+    nom = "Élément"
+
     def __init__(self):
-        self.nom = "Élément"
         self.resistance = 0
         self.puissance = 0
 

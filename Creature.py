@@ -6,6 +6,7 @@ from DerivedStats import *
 from CreatureTemplate import *
 from utils import generer_nom_espece
 from enum import Enum
+from StatusEffectManager import StatusEffectManager
 
 import random
 
@@ -21,7 +22,7 @@ class BaseStats:
         self.constitution = constitution
         self.agilite = agilite
         self.erudition = erudition
-        
+
 class Creature(BaseStats, DerivedStats):
     def __init__(self, species, constitution, agilite, erudition, size, basic_trait, *additional_traits):
         self.species = species
@@ -29,6 +30,8 @@ class Creature(BaseStats, DerivedStats):
         self.agilite = agilite
         self.erudition = erudition
         self.size = size
+        self.status_effect_manager = StatusEffectManager(self)  # Initialize the effect manager
+
 
         # Initialisation des résistances et puissances
         self.resistances = {}
@@ -90,18 +93,16 @@ class Creature(BaseStats, DerivedStats):
         return creature
     
     def afficher_stats(self):
-        trait_names = ', '.join(t.nom_trait for t in self.traits)
-        skill_names = ', '.join(type(s).__name__ for s in self.skills)
-        resistance_str = ', '.join(f"{k.__name__}: {v}" for k, v in self.resistances.items())
-        puissance_str = ', '.join(f"{k.__name__}: {v}" for k, v in self.puissances.items())
-
-        return (f"{self.species} - Vie : {self.stats.vie:.2f}/{self.stats.vie_max:.2f}, "
-                f"Énergie : {self.stats.energie:.2f}/{self.stats.energie_max:.2f}, Taille : {self.size.name}, "
-                f"Esquive : {self.stats.esquive:.2f}, Précision : {self.stats.accuracy:.2f}, Rapidité : {self.stats.attack_speed:.2f}\n"
-                f"Traits : {trait_names}\n"
-                f"Compétences : {skill_names}\n"
-                f"Résistances : {resistance_str}\n"
-                f"Puissances : {puissance_str}")
+        stats = f"""
+        {self.species} - Vie : {self.stats.vie:.2f}/{self.stats.vie_max:.2f}, Énergie : {self.stats.energie:.2f}/{self.stats.energie_max:.2f},
+        Taille : {self.size.name}, Esquive : {self.stats.esquive:.2f}, Précision : {self.stats.accuracy:.2f}, Rapidité : {self.stats.attack_speed:.2f}
+        Traits : {', '.join([trait.nom_trait for trait in self.traits]) or 'Aucun'}
+        Compétences : {', '.join([skill.__class__.__name__ for skill in self.skills]) or 'Aucune'}
+        Résistances : {', '.join(f"{element.nom}: {value:.2f}" for element, value in self.resistances.items())}
+        Puissances : {', '.join(f"{element.nom}: {value:.2f}" for element, value in self.puissances.items())}
+        Effets actifs : {', '.join([f"{effect.name}({effect.duration:.2f})" for effect in self.status_effect_manager.active_effects]) or 'Aucun'}
+        """
+        print(stats)
     
     def add_trait(self, trait):
         # Vérification des doublons
@@ -155,7 +156,12 @@ class Creature(BaseStats, DerivedStats):
         skill_type = skill_enum.skill_class
         for skill in self.skills:
             if isinstance(skill, skill_type):
+                print(f"{self.species} → Lance {skill.name} à {target.species}")
                 skill.activate(self, target)
+                effect = skill.get_effect()
+                if effect:
+                    print(f"{self.species} → Tente d'appliquer {effect.name} à {target.species}")
+                    target.status_effect_manager.apply_effect(effect)
                 return
         print(f"{self.species} n'a pas la compétence {skill_enum.name}")
 
@@ -173,4 +179,13 @@ class Creature(BaseStats, DerivedStats):
                 best_score = score
                 best_element = element
 
-        return best_element
+        return best_element    
+    
+    def add_status_effect(self, effect):
+        self.status_effect_manager.apply_effect(effect)
+
+    def update_status_effects(self):
+        self.status_effect_manager.update_effects()
+
+    def remove_status_effect(self, effect):
+        self.status_effect_manager.remove_effect(effect)

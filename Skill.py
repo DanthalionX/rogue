@@ -1,6 +1,7 @@
 
 from enum import Enum
 from Trait import LivingTrait, UndeadTrait
+from StatusEffect import *
 from Element import ShadowElement, MentalElement
 
 class SkillType(Enum):
@@ -9,6 +10,7 @@ class SkillType(Enum):
     DOMAIN = "DOMAIN"
 
 class Skill:
+    name = "Skill"
     def __init__(self, skill_type: SkillType, is_dodgeable=True):
         self.skill_type = skill_type
         self.skill_level = 1
@@ -41,16 +43,22 @@ class Skill:
     def activate(self, caster, target):
         raise NotImplementedError("La méthode activate doit être implémentée dans la sous-classe.")
 
+    def get_effect(self):
+        """Retourne l'effet de statut associé à la compétence."""
+        raise NotImplementedError(f"{self.__class__.__name__} doit redéfinir la méthode get_effect() pour associer un effet.")
+
 # Domaine de compétence : Necromancy
 class NecromancySkill(Skill):
     def __init__(self):
         super().__init__(SkillType.DOMAIN)
+        self.name = "Necromancie"
         self.linked_elements = [(ShadowElement, 1.0)]  # Compétence principale liée à Mental
 
 # Compétence dépendante du domaine de Nécromancie
 class RiseUndeadSkill(Skill):
     def __init__(self):
         super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        self.name = "Lever des morts"
         self.required_skills = [NecromancySkill]
         self.linked_elements = [(ShadowElement, 0.75), (MentalElement, 0.25)]
 
@@ -81,11 +89,13 @@ class RiseUndeadSkill(Skill):
 class PsychomancySkill(Skill):
     def __init__(self):
         super().__init__(SkillType.DOMAIN)
+        self.name = "Psychomancie"
         self.linked_elements = [(MentalElement, 1.0)]  
 
 class FearSkill(Skill):
     def __init__(self):
         super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        self.name = "Effroi"
         self.required_skills = [PsychomancySkill]  
         self.linked_elements = [(MentalElement, 1.0)]  
 
@@ -103,9 +113,14 @@ class FearSkill(Skill):
             print(f"{caster.species} échoue à effrayer {target.species} !")
             self.raise_skill_xp(10)
 
+    def get_effect(self):
+        effect = FearEffect(base_duration=3)
+        return effect
+    
 class ConfusionSkill(Skill):
     def __init__(self):
         super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        self.name = "Perte de repères"
         self.required_skills = [PsychomancySkill]  
         self.linked_elements = [(MentalElement, 0.5), (ShadowElement, 0.5)]  # 50/50 Ombre et Mental
 
@@ -122,6 +137,10 @@ class ConfusionSkill(Skill):
         else:
             print(f"{caster.species} échoue à confondre {target.species} !")
             self.raise_skill_xp(10)
+
+    def get_effect(self):
+        effect = ConfusionEffect(base_duration=3)
+        return effect
 
 # Enum pour gérer les compétences par référence
 class SkillEnum(Enum):
