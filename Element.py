@@ -1,7 +1,7 @@
 from enum import Enum
 
 class Element:
-    nom = "Élément"
+    name = "Élément"
 
     def __init__(self):
         self.resistance = 0
@@ -21,70 +21,74 @@ class ElementEnum(Enum):
         return globals()[self.value]
 
 class PhysicalElement(Element):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.name = "Physique"
 
 class MentalElement(Element):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.name = "Mental"
 
 class BluntElement(PhysicalElement):
     def __init__(self):
         super().__init__()
-        self.nom = "Contondant"
+        self.name = "Contondant"
         self.resistance = 5
         self.puissance = 10
 
 class SharpElement(PhysicalElement):
     def __init__(self):
         super().__init__()
-        self.nom = "Tranchant"
+        self.name = "Tranchant"
         self.resistance = 3
         self.puissance = 12
 
 class PercingElement(PhysicalElement):
     def __init__(self):
         super().__init__()
-        self.nom = "Perçant"
+        self.name = "Perçant"
         self.resistance = 4
         self.puissance = 11
 
 class FireElement(Element):
     def __init__(self):
         super().__init__()
-        self.nom = "Feu"
+        self.name = "Feu"
         self.resistance = 2
         self.puissance = 8
 
 class WaterElement(Element):
     def __init__(self):
         super().__init__()
-        self.nom = "Eau"
+        self.name = "Eau"
         self.resistance = 3
         self.puissance = 7
 
 class AirElement(Element):
     def __init__(self):
         super().__init__()
-        self.nom = "Air"
+        self.name = "Air"
         self.resistance = 1
         self.puissance = 5
 
 class EarthElement(Element):
     def __init__(self):
         super().__init__()
-        self.nom = "Terre"
+        self.name = "Terre"
         self.resistance = 4
         self.puissance = 6
 
 class LightElement(Element):
     def __init__(self):
         super().__init__()
-        self.nom = "Lumière"
+        self.name = "Lumière"
         self.resistance = 3
         self.puissance = 7
 
 class ShadowElement(Element):
     def __init__(self):
         super().__init__()
-        self.nom = "Ombre"
+        self.name = "Ombre"
         self.resistance = 3
         self.puissance = 9

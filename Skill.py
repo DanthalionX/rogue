@@ -142,13 +142,48 @@ class ConfusionSkill(Skill):
         effect = ConfusionEffect(base_duration=3)
         return effect
 
+
+# Compétence dépendante du domaine de Pyromancie
+class PyromancySkill(Skill):
+    def __init__(self):
+        super().__init__(SkillType.DOMAIN)
+        self.name = "Pyromancie"
+        self.linked_elements = [(FireElement, 1.0)]  
+    
+class BurnSkill(Skill):
+    def __init__(self):
+        super().__init__(SkillType.ACTIVE, is_dodgeable=False)
+        self.name = "Brûlure"
+        self.required_skills = [PyromancySkill]  
+        self.linked_elements = [(FireElement, 1)] 
+
+    def activate(self, caster, target):
+        success_chance = self.calculate_success_chance(caster, target)
+        
+        if success_chance > 0:
+            print(f"{target.species} est enflammé par {caster.species} !")
+            self.raise_skill_xp(100)
+            for req in self.required_skills:
+                for skill in caster.skills:
+                    if isinstance(skill, req):
+                        skill.raise_skill_xp(10)
+        else:
+            print(f"{caster.species} échoue à enflammer {target.species} !")
+            self.raise_skill_xp(10)
+
+    def get_effect(self):
+        effect = BurningEffect(base_duration=3)
+        return effect
+
 # Enum pour gérer les compétences par référence
 class SkillEnum(Enum):
     NECROMANCY = NecromancySkill
     PSYCHOMANCY = PsychomancySkill
+    PYROMANCY = PyromancySkill
     RISE_UNDEAD = RiseUndeadSkill
     FEAR = FearSkill
     CONFUSION = ConfusionSkill
+    BURN = BurnSkill
 
     @property
     def skill_class(self):
