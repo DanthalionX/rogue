@@ -4,18 +4,11 @@ from Trait import *
 from Skill import *
 from DerivedStats import *
 from CreatureTemplate import *
-from utils import generer_nom_espece
+from utils import generer_nom_espece,Size
 from enum import Enum
 from StatusEffectManager import StatusEffectManager
 
 import random
-
-class Size(Enum):
-    XS = 3
-    S = 4
-    M = 5
-    L = 6
-    XL = 7
 
 class BaseStats:
     def __init__(self, constitution: int, agilite: int, erudition: int):
@@ -46,7 +39,7 @@ class Creature(BaseStats, DerivedStats):
         self.stats.initialiser_resistances_et_puissances()
 
     @classmethod
-    def generer_aleatoire(cls, template=None):
+    def generer_aleatoire(cls, template=CreatureTemplate()):
         from utils import generer_nom_espece
         from Trait import TraitEnum, TraitType
 

@@ -1,5 +1,6 @@
 
 import random
+from enum import Enum
 
 def generer_nom_aleatoire():
     prefixes = ["Ka", "Ze", "Lu", "Xa", "Ar", "Lo", "Fa", "Vi", "Ne", "Sa"]
@@ -17,3 +18,10 @@ def generer_nom_espece():
     if random.random() < 0.3:
         nom = nom[::-1].capitalize()
     return nom
+
+class Size(Enum):
+    XS = 3
+    S = 4
+    M = 5
+    L = 6
+    XL = 7
