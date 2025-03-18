@@ -2,12 +2,12 @@
 from dataclasses import dataclass
 from typing import Optional, List
 from Creature import Size
-from Trait import Trait
-from Skill import Skill
+from Trait import *
+from Skill import *
 
 @dataclass
 class CreatureTemplate:
-    species: Optional[str] = None  # ✅ Ajout de l'attribut species
+    species: Optional[str] = None  
     constitution: Optional[int] = None
     agilite: Optional[int] = None
     erudition: Optional[int] = None
@@ -16,3 +16,5 @@ class CreatureTemplate:
     traits: Optional[List[Trait]] = None
     nb_standard_traits: Optional[int] = None
     skills: Optional[List[Skill]] = None
+    locked_traits: Optional[List[Trait]] = None
+    locked_skills: Optional[List[Skill]] = None

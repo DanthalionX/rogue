@@ -63,12 +63,16 @@ class Creature(BaseStats, DerivedStats):
             basic_trait_enum = random.choice([t for t in TraitEnum if t.trait_class().trait_type == TraitType.BASIC])
             basic_trait = basic_trait_enum.trait_class()
 
-        # Compléter automatiquement les traits standards
-        existing_traits = template.traits if template and template.traits else []
-        nb_standard_traits = template.nb_standard_traits if template and template.nb_standard_traits is not None else random.randint(0, 5)
+        # Compléter automatiquement les traits standards# Filtrer les traits et compétences interdits# Convertir locked_traits en classe directement
+        locked_trait_classes = [type(t) for t in (template.locked_traits or [])]
+        traits_possibles = [t for t in TraitEnum if t.trait_class().trait_type == TraitType.STANDARD and t.trait_class not in locked_trait_classes]
+        skills_possibles = [s for s in SkillEnum if s not in (template.locked_skills or [])]
 
+        # Sélection entre 0 et 5 traits STANDARD
+        nb_standard_traits = template.nb_standard_traits if template and template.nb_standard_traits is not None else random.randint(0, 5)
+        existing_traits = template.traits if template and template.traits else []
         while len(existing_traits) < nb_standard_traits:
-            trait_enum = random.choice([t for t in TraitEnum if t.trait_class().trait_type == TraitType.STANDARD])
+            trait_enum = random.choice(traits_possibles)
             trait_class = trait_enum.trait_class
             trait_instance = trait_class()
             if all(not isinstance(t, trait_class) for t in existing_traits):
