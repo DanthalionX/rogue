@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Humain",
+        "constitution": 5,
+        "agilite": 5,
+        "erudition": 5,
+        "basic_trait": "LIVING",
+        "traits": [
+            "NAMED"
+        ],
+        "skills": [],
+        "size": "M"
+    }
+]

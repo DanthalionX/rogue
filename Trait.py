@@ -67,7 +67,7 @@ class NamedTrait(Trait):
     def __init__(self):
         super().__init__(TraitType.STANDARD)
         self.name = "Nommé"
-        self.name = generer_nom_aleatoire()
+        self.creature_name = generer_nom_aleatoire()
 
 class ElementAffinityTrait(Trait):
     def __init__(self):

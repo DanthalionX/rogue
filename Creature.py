@@ -54,6 +54,7 @@ class Creature(BaseStats, DerivedStats):
         agilite = template.agilite if template and template.agilite is not None else random.randint(5, 20)
         erudition = template.erudition if template and template.erudition is not None else random.randint(5, 20)
         size = template.size if template and template.size is not None else random.choice(list(Size))
+        species = template.species if template and template.species is not None else generer_nom_espece()
 
         # Sélection d'un trait BASIC obligatoire
         if template and template.basic_trait:
@@ -78,7 +79,7 @@ class Creature(BaseStats, DerivedStats):
 
         # Création de la créature
         creature = cls(
-            generer_nom_espece(),
+            species,
             constitution,
             agilite,
             erudition,
