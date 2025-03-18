@@ -31,3 +31,21 @@ class Controller:
 
     def take_turn(self):
         pass
+    
+    def attempt_flee(self):
+        # Calcul de la chance de fuite basée sur l'agilité et la chance
+        flee_chance = self.creature.stats.esquive + self.creature.stats.chance
+        success_chance = random.uniform(0, 100)
+        
+        if success_chance <= flee_chance:
+            print(f"{self.creature.species} a réussi à fuir !")
+            # Retirer la créature des listes d'ennemis des autres créatures
+            for other in self.nearby_creatures:
+                if self.creature in other.controller.ennemy_nearby_creatures:
+                    other.controller.ennemy_nearby_creatures.remove(self.creature)
+            # Retirer de la liste des créatures proches
+            self.nearby_creatures.clear()
+            return True
+        else:
+            print(f"{self.creature.species} a échoué dans sa tentative de fuite...")
+            return False

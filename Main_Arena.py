@@ -1,6 +1,7 @@
 import time
 from HostileController import HostileController
 from DefensiveController import DefensiveController
+from PassiveController import PassiveController
 from Creature import Creature
 
 MAX_ROUNDS = 50
@@ -15,9 +16,9 @@ def main():
     creatures = [creature1, creature2,creature3, creature4]
 
     creature1.controller = HostileController(creature1, creatures)
-    creature2.controller = DefensiveController(creature2, creatures)
-    creature3.controller = DefensiveController(creature2, creatures)
-    creature4.controller = DefensiveController(creature2, creatures)
+    creature2.controller = PassiveController(creature2, creatures)
+    creature3.controller = PassiveController(creature2, creatures)
+    creature4.controller = PassiveController(creature2, creatures)
 
     print("=== DÉBUT DU COMBAT ===")
 
