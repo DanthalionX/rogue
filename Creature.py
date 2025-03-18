@@ -94,10 +94,13 @@ class Creature(BaseStats, DerivedStats):
         return creature
     
     def afficher_stats(self):
+        named_trait = next((trait for trait in self.traits if isinstance(trait, NamedTrait)), None)
+        display_name = f"{self.species} {self.size.name} ({named_trait.creature_name})" if named_trait else self.species
+
         stats = f"""
-        {self.species} - Vie : {self.stats.vie:.2f}/{self.stats.vie_max:.2f}, Endurance : {self.stats.endurance:.2f}/{self.stats.endurance_max:.2f}, Mana : {self.stats.mana:.2f}/{self.stats.mana_max:.2f},
-        Taille : {self.size.name}, Esquive : {self.stats.esquive:.2f}, Précision : {self.stats.accuracy:.2f}, Rapidité : {self.stats.attack_speed:.2f}
+        {display_name} - {self.size.name} - HP : {self.stats.vie:.2f}/{self.stats.vie_max:.2f}, EP : {self.stats.endurance:.2f}/{self.stats.endurance_max:.2f}, MP : {self.stats.mana:.2f}/{self.stats.mana_max:.2f},
         Traits : {', '.join([trait.name for trait in self.traits]) or 'Aucun'}
+        Statistiques : CON:{self.constitution} AGI:{self.agilite} ERU:{self.erudition} -> Esquive : {self.stats.esquive:.2f}, Précision : {self.stats.accuracy:.2f}, Rapidité : {self.stats.attack_speed:.2f}
         Compétences : {', '.join([skill.name for skill in self.skills]) or 'Aucune'}
         Résistances : {', '.join(f"{element().name}: {value:.2f}" for element, value in self.resistances.items())}
         Puissances : {', '.join(f"{element().name}: {value:.2f}" for element, value in self.puissances.items())}
