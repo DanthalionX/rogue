@@ -1,5 +1,4 @@
 import time
-import random
 from Controller import Controller
 from Creature import Creature
 
@@ -9,21 +8,22 @@ TICK_INTERVAL = 0.5
 def main():
     creature1 = Creature.generer_aleatoire()
     creature2 = Creature.generer_aleatoire()
-    enemies = [creature2]
 
-    controller1 = Controller(creature1, enemies)
-    controller2 = Controller(creature2, [creature1])
+    creatures = [creature1, creature2]
 
-    print("\n=== DÉBUT DU COMBAT ===\n")
-    round_counter = 0
-    MAX_ROUNDS = 50
+    creature1.controller = Controller(creature1, creatures)
+    creature2.controller = Controller(creature2, creatures)
 
-    while creature1.is_alive() and creature2.is_alive() and round_counter < MAX_ROUNDS:
-        controller1.update_logic()
-        controller2.update_logic()
-        round_counter += 1
+    print("=== DÉBUT DU COMBAT ===")
 
-    print("\n=== FIN DU COMBAT ===\n")
+    while all(c.is_alive() for c in creatures):
+        for creature in creatures:
+            if creature.is_alive():
+                creature.controller.take_turn()
+            time.sleep(0.5)
+
+    print("=== FIN DU COMBAT ===")
+
     if creature1.is_alive() and creature2.is_alive():
         print(f"Égalité après {MAX_ROUNDS} rounds.")
     elif creature1.is_alive():
