@@ -17,14 +17,15 @@ class BaseStats:
         self.erudition = erudition
 
 class Creature(BaseStats, DerivedStats):
-    def __init__(self, species, constitution, agilite, erudition, size, basic_trait, *additional_traits):
+    def __init__(self, species, constitution, agilite, erudition, size, basic_trait, *additional_traits, controller_class=None):
         self.species = species
         self.constitution = constitution
         self.agilite = agilite
         self.erudition = erudition
         self.size = size
-        self.status_effect_manager = StatusEffectManager(self)  # Initialize the effect manager
-
+        self.has_fled = False
+        self.status_effect_manager = StatusEffectManager(self)
+        self.controller = controller_class(self) if controller_class else None
 
         # Initialisation des résistances et puissances
         self.resistances = {}
@@ -39,7 +40,7 @@ class Creature(BaseStats, DerivedStats):
         self.stats.initialiser_resistances_et_puissances()
 
     @classmethod
-    def generer_aleatoire(cls, template=CreatureTemplate()):
+    def generer_aleatoire(cls, template=CreatureTemplate(), controller_class=None):
         from utils import generer_nom_espece
         from Trait import TraitEnum, TraitType
 
@@ -85,6 +86,10 @@ class Creature(BaseStats, DerivedStats):
             *existing_traits
         )
 
+        # Initialise le contrôleur
+        creature.controller = controller_class(creature) if controller_class else None
+        print(f"{creature.species} possède un contrôleur de type {type(creature.controller).__name__}")
+        
         # Ajout des compétences à la créature
         creature.skills.extend(existing_skills)
 
@@ -159,7 +164,6 @@ class Creature(BaseStats, DerivedStats):
         if target.stats.vie <= 0:
             target.stats.vie = 0
             print(f"{self.species} a tué {target.species} !")
-
         
     def cast_skill(self, skill_enum, target):
         skill_type = skill_enum.skill_class
@@ -195,6 +199,8 @@ class Creature(BaseStats, DerivedStats):
 
         return best_element    
     
+    # STATUS MANAGEMENT ----------------------------------------------------
+
     def add_status_effect(self, effect):
         self.status_effect_manager.apply_effect(effect)
 
@@ -203,3 +209,14 @@ class Creature(BaseStats, DerivedStats):
 
     def remove_status_effect(self, effect):
         self.status_effect_manager.remove_effect(effect)
+
+    # controller MANAGEMENT ----------------------------------------------------
+
+    def set_nearby_creatures(self, nearby_creatures):
+        # Stocke la liste complète des créatures à proximité
+        self.controller.nearby_creatures = [c for c in nearby_creatures if c != self]
+        
+        # Initialisation des catégories : neutre par défaut
+        self.controller.neutral_nearby_creatures = self.controller.nearby_creatures.copy()
+        self.controller.ennemy_nearby_creatures = []
+        self.controller.ally_nearby_creatures = []
