@@ -6,21 +6,22 @@ from Trait import TraitEnum
 from Element import ElementEnum
 
 def main():
-    # Création d'une créature pyromancienne avec PyromancySkill et BurnSkill
-    pyromancer_template = CreatureTemplate(
-        skills=[SkillEnum.PYROMANCY.skill_class(), SkillEnum.BURN.skill_class()]
+    # Création d'une créature healer avec holymancy et heal
+    healer_template = CreatureTemplate(
+        skills=[SkillEnum.HOLYMANCY.skill_class(), SkillEnum.HEAL.skill_class()]
     )
-    pyromancer = Creature.generer_aleatoire(pyromancer_template)
-    pyromancer.afficher_stats()
+    healer = Creature.generer_aleatoire(healer_template)
+    healer.afficher_stats()
     
     # Création d'une créature cible vivante
     target_template = CreatureTemplate(
         basic_trait=TraitEnum.LIVING.trait_class()
     )
     target = Creature.generer_aleatoire(target_template)
+    target.stats.vie=1
     target.afficher_stats()
 
-    pyromancer.cast_skill(SkillEnum.BURN, target)
+    healer.cast_skill(SkillEnum.HEAL, target)
 
     # Simulation du combat
     for _ in range(10):
@@ -28,7 +29,7 @@ def main():
         time.sleep(0.5)
 
     # Affichage après l'effet
-    print("=== État de la cible après la brûlure ===")
+    print("=== État de la cible après le soin ===")
     target.afficher_stats()
 
 if __name__ == "__main__":

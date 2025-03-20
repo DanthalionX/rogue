@@ -1,8 +1,9 @@
 
 from enum import Enum
-from Trait import LivingTrait, UndeadTrait
+from Trait import *
 from StatusEffect import *
-from Element import ShadowElement, MentalElement
+from Element import *
+import random
 
 class SkillType(Enum):
     ACTIVE = "ACTIVE"
@@ -10,16 +11,24 @@ class SkillType(Enum):
     DOMAIN = "DOMAIN"
 
 class Skill:
-    name = "Skill"
-    def __init__(self, skill_type: SkillType, mana_cost=0,endurance_cost=0, is_dodgeable=True):
+    def __init__(
+            self, skill_type: SkillType, 
+            mana_cost=0,
+            endurance_cost=0, 
+            is_dodgeable=True,
+            name="Undefined_name",
+            required_skills=[],
+            linked_elements = []
+            ):
         self.skill_type = skill_type
         self.skill_level = 1
         self.skill_experience = 0
-        self.required_skills = []
+        self.required_skills = required_skills
         self.is_dodgeable = is_dodgeable
-        self.linked_elements = []  # (element, weight)
+        self.linked_elements = linked_elements  # (element, weight)
         self.mana_cost = mana_cost
         self.endurance_cost = endurance_cost
+        self.name=name
 
     def xp_required_for_next_level(self):
         return int(100 * (1.5 ** self.skill_level))
@@ -59,10 +68,14 @@ class NecromancySkill(Skill):
 # Compétence dépendante du domaine de Nécromancie
 class RiseUndeadSkill(Skill):
     def __init__(self):
-        super().__init__(SkillType.ACTIVE,mana_cost=10, is_dodgeable=False)
-        self.name = "Lever des morts"
-        self.required_skills = [NecromancySkill]
-        self.linked_elements = [(ShadowElement, 0.75), (MentalElement, 0.25)]
+        super().__init__(
+            SkillType.ACTIVE,
+            mana_cost=10, 
+            is_dodgeable=False,
+            name = "Lever des morts",
+            required_skills = [NecromancySkill],
+            linked_elements = [(ShadowElement, 0.75), (MentalElement, 0.25)]
+        )
 
     def activate(self, caster, target):
         success_chance = self.calculate_success_chance(caster, target)
@@ -71,16 +84,16 @@ class RiseUndeadSkill(Skill):
                 target.traits = [t for t in target.traits if not isinstance(t, LivingTrait)]
                 target.add_trait(UndeadTrait())
                 target.stats.vie = target.stats.vie_max
-                print(f"{target.species} a été relevé comme mort-vivant par {caster.species} !")
+                print(f"> {target.species} a été relevé comme mort-vivant par {caster.species} !")
                 self.raise_skill_xp(100)  # Gain d'XP en cas de succès
                 for req in self.required_skills:
                     for skill in caster.skills:
                         if isinstance(skill, req):
                             skill.raise_skill_xp(10)  # Bonus dans les compétences liées
             else:
-                print(f"{target.species} ne peut pas être relevé — Ce n'est pas une créature vivante !")
+                print(f"> {target.species} ne peut pas être relevé — Ce n'est pas une créature vivante !")
         else:
-            print(f"{caster.species} échoue à relever {target.species} comme mort-vivant !")
+            print(f"> {caster.species} échoue à relever {target.species} comme mort-vivant !")
             self.raise_skill_xp(10)  # 10% du gain d'XP en cas d'échec
             for req in self.required_skills:
                 for skill in caster.skills:
@@ -96,23 +109,27 @@ class PsychomancySkill(Skill):
 
 class FearSkill(Skill):
     def __init__(self):
-        super().__init__(SkillType.ACTIVE,mana_cost=10, is_dodgeable=False)
-        self.name = "Effroi"
-        self.required_skills = [PsychomancySkill]  
-        self.linked_elements = [(MentalElement, 1.0)]  
+        super().__init__(
+            SkillType.ACTIVE,
+            mana_cost=10, 
+            is_dodgeable=False,
+            name = "Effroi",
+            required_skills = [PsychomancySkill],
+            linked_elements = [(MentalElement, 1.0)] 
+            )
 
     def activate(self, caster, target):
         success_chance = self.calculate_success_chance(caster, target)
 
         if success_chance > 0:
-            print(f"{target.species} est terrifié par {caster.species} et tente de fuir !")
+            print(f"> {target.species} est terrifié par {caster.species} et tente de fuir !")
             self.raise_skill_xp(100)
             for req in self.required_skills:
                 for skill in caster.skills:
                     if isinstance(skill, req):
                         skill.raise_skill_xp(10)
         else:
-            print(f"{caster.species} échoue à effrayer {target.species} !")
+            print(f"> {caster.species} échoue à effrayer {target.species} !")
             self.raise_skill_xp(10)
 
     def get_effect(self):
@@ -121,23 +138,27 @@ class FearSkill(Skill):
     
 class ConfusionSkill(Skill):
     def __init__(self):
-        super().__init__(SkillType.ACTIVE,mana_cost=10, is_dodgeable=False)
-        self.name = "Perte de repères"
-        self.required_skills = [PsychomancySkill]  
-        self.linked_elements = [(MentalElement, 0.5), (ShadowElement, 0.5)]  # 50/50 Ombre et Mental
+        super().__init__(
+            SkillType.ACTIVE,
+            mana_cost=10, 
+            is_dodgeable=False,
+            name = "Perte de repères",
+            required_skills = [PsychomancySkill],
+            linked_elements = [(MentalElement, 0.5), (ShadowElement, 0.5)]
+        )
 
     def activate(self, caster, target):
         success_chance = self.calculate_success_chance(caster, target)
         
         if success_chance > 0:
-            print(f"{target.species} est confusé par {caster.species} !")
+            print(f"> {target.species} est confusé par {caster.species} !")
             self.raise_skill_xp(100)
             for req in self.required_skills:
                 for skill in caster.skills:
                     if isinstance(skill, req):
                         skill.raise_skill_xp(10)
         else:
-            print(f"{caster.species} échoue à confondre {target.species} !")
+            print(f"> {caster.species} échoue à confondre {target.species} !")
             self.raise_skill_xp(10)
 
     def get_effect(self):
@@ -154,38 +175,90 @@ class PyromancySkill(Skill):
     
 class BurnSkill(Skill):
     def __init__(self):
-        super().__init__(SkillType.ACTIVE, mana_cost=5,is_dodgeable=False)
-        self.name = "Brûlure"
-        self.required_skills = [PyromancySkill]  
-        self.linked_elements = [(FireElement, 1)] 
+        super().__init__(
+            SkillType.ACTIVE, 
+            mana_cost=5,
+            is_dodgeable=False,
+            name = "Brûlure",
+            required_skills = [PyromancySkill],
+            linked_elements = [(FireElement, 1)]
+        )
 
     def activate(self, caster, target):
         success_chance = self.calculate_success_chance(caster, target)
         
         if success_chance > 0:
-            print(f"{target.species} est enflammé par {caster.species} !")
+            print(f"> {target.species} est enflammé par {caster.species} !")
             self.raise_skill_xp(100)
             for req in self.required_skills:
                 for skill in caster.skills:
                     if isinstance(skill, req):
                         skill.raise_skill_xp(10)
         else:
-            print(f"{caster.species} échoue à enflammer {target.species} !")
+            print(f"> {caster.species} échoue à enflammer {target.species} !")
             self.raise_skill_xp(10)
+            for req in self.required_skills:
+                for skill in caster.skills:
+                    if isinstance(skill, req):
+                        skill.raise_skill_xp(1)
 
     def get_effect(self):
         effect = BurningEffect(base_duration=3)
+        return effect
+    
+# Compétence dépendante du domaine de Sacromancie
+class HolymancySkill(Skill):
+    def __init__(self):
+        super().__init__(
+            SkillType.DOMAIN,
+            name = "Sacromancie",
+            linked_elements = [(LightElement, 1.0)]  
+        )
+
+class HealingSkill(Skill):
+    def __init__(self):
+        super().__init__(
+            SkillType.ACTIVE,
+            name="Soin",
+            mana_cost=10,
+            is_dodgeable=False, 
+            required_skills = [HolymancySkill], 
+            linked_elements= [(LightElement, 1.0)]  
+        )
+
+    def activate(self, caster, target):
+        success_chance = self.calculate_success_chance(caster, target)
+                
+        if success_chance > 0:
+            print(f"> {caster.species} soigne {target.species} !")
+            self.raise_skill_xp(100)
+            for req in self.required_skills:
+                for skill in caster.skills:
+                    if isinstance(skill, req):
+                        skill.raise_skill_xp(10)
+        else:
+            print(f"> {caster.species} échoue à soigner {target.species}.")
+            self.raise_skill_xp(10)
+            for req in self.required_skills:
+                for skill in caster.skills:
+                    if isinstance(skill, req):
+                        skill.raise_skill_xp(1)
+
+    def get_effect(self):
+        effect = HealingEffect(base_duration=5)
         return effect
 
 # Enum pour gérer les compétences par référence
 class SkillEnum(Enum):
     NECROMANCY = NecromancySkill
     PSYCHOMANCY = PsychomancySkill
+    HOLYMANCY = HolymancySkill
     PYROMANCY = PyromancySkill
     RISE_UNDEAD = RiseUndeadSkill
     FEAR = FearSkill
     CONFUSION = ConfusionSkill
     BURN = BurnSkill
+    HEAL = HealingSkill
 
     @property
     def skill_class(self):

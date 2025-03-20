@@ -8,7 +8,7 @@ class StatusEffectManager:
         # Vérification pour éviter les doublons
         for active_effect in self.active_effects:
             if type(active_effect) == type(effect):
-                print(f"{self.creature.species} est déjà affecté par {effect.__class__.__name__}.")
+                print(f"> {self.creature.species} est déjà affecté par {effect.__class__.__name__}.")
                 return
         
         # Vérification de la résistance → Ajustement de la durée
@@ -22,9 +22,9 @@ class StatusEffectManager:
         if effect.duration > 0:
             self.active_effects.append(effect)
             effect.apply_effect(self.creature)
-            print(f"{self.creature.species} est maintenant sous l'effet de {effect.__class__.__name__} pour {effect.duration:.2f} ticks.")
+            print(f"> {self.creature.species} est maintenant sous l'effet de {effect.__class__.__name__} pour {effect.duration:.2f} ticks.")
         else:
-            print(f"L'effet {effect.__class__.__name__} a été annulé à cause de la résistance élevée de {self.creature.species}.")
+            print(f"> L'effet {effect.__class__.__name__} a été annulé à cause de la résistance élevée de {self.creature.species}.")
 
     def update_effects(self):
         for effect in self.active_effects:

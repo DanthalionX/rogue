@@ -169,19 +169,19 @@ class Creature(BaseStats, DerivedStats):
         skill_type = skill_enum.skill_class
         for skill in self.skills:
             if isinstance(skill, skill_type):
-                if self.stats.mana < skill.mana_cost or self.stats.endurance < skill.endurance_cost:
-                    print(f"{self.species} n'a pas assez de ressources pour utiliser {skill_enum.name}")
-                    return
                 print(f"{self.species} → Lance {skill.name} à {target.species}")
+                if self.stats.mana < skill.mana_cost or self.stats.endurance < skill.endurance_cost:
+                    print(f"> {self.species} n'a pas assez de ressources pour utiliser {skill_enum.name}")
+                    return
                 self.stats.mana -= skill.mana_cost
                 self.stats.endurance -= skill.endurance_cost
                 skill.activate(self, target)
                 effect = skill.get_effect()
                 if effect:
-                    print(f"{self.species} → Tente d'appliquer {effect.name} à {target.species}")
+                    print(f"> {self.species} → Tente d'appliquer {effect.name} à {target.species}")
                     target.status_effect_manager.apply_effect(effect)
                 return
-        print(f"{self.species} n'a pas la compétence {skill_enum.name}")
+        print(f"> {self.species} n'a pas la compétence {skill_enum.name}")
 
     def is_alive(self):
         return self.stats.vie > 0
