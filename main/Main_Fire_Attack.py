@@ -1,8 +1,8 @@
 import time
-from Creature import Creature
+from entities.Creature import Creature
 from CreatureTemplate import CreatureTemplate
 from skills.Skill import SkillEnum
-from Trait import TraitEnum
+from entities.Trait import TraitEnum
 from Element import ElementEnum
 
 def main():

@@ -1,7 +1,7 @@
-from Creature import Creature
+from entities.Creature import Creature
 from skills.Skill import *
 from CreatureTemplate import CreatureTemplate
-from Trait import LivingTrait
+from entities.Trait import LivingTrait
 
 def main():
     # Création d'une créature vivante aléatoire

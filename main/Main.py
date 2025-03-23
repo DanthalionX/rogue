@@ -1,5 +1,5 @@
 
-from Creature import Creature
+from entities.Creature import Creature
 from CreatureTemplate import CreatureTemplate
 
 class Main:

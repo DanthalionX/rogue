@@ -1,7 +1,7 @@
 
 import json
 from CreatureTemplate import CreatureTemplate
-from Trait import TraitEnum
+from entities.Trait import TraitEnum
 from skills.Skill import SkillEnum
 
 class ArchetypeLoader:
@@ -33,7 +33,7 @@ class ArchetypeLoader:
                 combined_stats["species"] = data.get("name", None)  
 
                 if "size" in data:
-                    from Creature import Size
+                    from entities.Creature import Size
                     combined_stats["size"] = Size[data["size"]]
 
                 if "basic_trait" in data:

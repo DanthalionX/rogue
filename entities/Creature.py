@@ -1,6 +1,6 @@
 
 from Element import *
-from Trait import *
+from entities.Trait import *
 from skills.Skill import *
 from DerivedStats import *
 from CreatureTemplate import *
@@ -42,7 +42,7 @@ class Creature(BaseStats, DerivedStats):
     @classmethod
     def generer_aleatoire(cls, template=CreatureTemplate(), controller_class=None):
         from utils import generer_nom_espece
-        from Trait import TraitEnum, TraitType
+        from entities.Trait import TraitEnum, TraitType
 
         constitution = template.constitution if template and template.constitution is not None else random.randint(5, 20)
         agilite = template.agilite if template and template.agilite is not None else random.randint(5, 20)

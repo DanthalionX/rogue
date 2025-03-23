@@ -1,6 +1,6 @@
 
 from Archetype_Loader import ArchetypeLoader
-from Creature import Creature
+from entities.Creature import Creature
 
 def main():
     print("=== Génération d'un Humain ===")

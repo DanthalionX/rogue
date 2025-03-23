@@ -1,7 +1,7 @@
 import time
-from Creature import Creature, Size
+from entities.Creature import Creature, Size
 from CreatureTemplate import CreatureTemplate
-from Trait import LivingTrait
+from entities.Trait import LivingTrait
 from skills.Skill import SkillEnum
 
 MAX_ROUNDS = 50

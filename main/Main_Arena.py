@@ -2,7 +2,7 @@ import time
 from HostileController import HostileController
 from DefensiveController import DefensiveController
 from PassiveController import PassiveController
-from Creature import Creature
+from entities.Creature import Creature
 
 MAX_ROUNDS = 50
 TICK_INTERVAL = 0.5

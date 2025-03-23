@@ -1,5 +1,5 @@
 
-from Creature import Creature, CreatureTemplate, Size
+from entities.Creature import Creature, CreatureTemplate, Size
 from skills.Skill import SkillEnum
 import time
 
