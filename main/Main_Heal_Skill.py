@@ -1,7 +1,7 @@
 import time
 from Creature import Creature
 from CreatureTemplate import CreatureTemplate
-from Skill import SkillEnum
+from skills.Skill import SkillEnum
 from Trait import TraitEnum
 from Element import ElementEnum
 

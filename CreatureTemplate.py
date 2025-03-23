@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Optional, List
 from utils import Size
 from Trait import *
-from Skill import *
+from skills.Skill import *
 
 @dataclass
 class CreatureTemplate:

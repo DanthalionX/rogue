@@ -1,5 +1,5 @@
 from Creature import Creature
-from Skill import *
+from skills.Skill import *
 from CreatureTemplate import CreatureTemplate
 from Trait import LivingTrait
 

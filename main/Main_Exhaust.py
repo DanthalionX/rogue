@@ -1,6 +1,6 @@
 
 from Creature import Creature, CreatureTemplate, Size
-from Skill import SkillEnum
+from skills.Skill import SkillEnum
 import time
 
 def main():

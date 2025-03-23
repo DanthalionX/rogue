@@ -1,7 +1,7 @@
 
 from enum import Enum
 from Trait import *
-from StatusEffect import *
+from effects.StatusEffect import *
 from Element import *
 import random
 

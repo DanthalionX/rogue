@@ -2,7 +2,7 @@ import time
 from Creature import Creature, Size
 from CreatureTemplate import CreatureTemplate
 from Trait import LivingTrait
-from Skill import SkillEnum
+from skills.Skill import SkillEnum
 
 MAX_ROUNDS = 50
 TICK_INTERVAL = 0.5

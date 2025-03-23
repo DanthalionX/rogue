@@ -1,7 +1,7 @@
 
 from Element import *
 from Trait import *
-from Skill import *
+from skills.Skill import *
 from DerivedStats import *
 from CreatureTemplate import *
 from utils import generer_nom_espece,Size

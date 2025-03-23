@@ -2,7 +2,7 @@
 import json
 from CreatureTemplate import CreatureTemplate
 from Trait import TraitEnum
-from Skill import SkillEnum
+from skills.Skill import SkillEnum
 
 class ArchetypeLoader:
     @staticmethod
