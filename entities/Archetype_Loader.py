@@ -1,6 +1,6 @@
 
 import json
-from CreatureTemplate import CreatureTemplate
+from entities.CreatureTemplate import CreatureTemplate
 from entities.Trait import TraitEnum
 from skills.Skill import SkillEnum
 

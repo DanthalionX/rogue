@@ -1,7 +1,7 @@
 
 from dataclasses import dataclass
 from typing import Optional, List
-from utils import Size
+from utils.utils import Size
 from entities.Trait import *
 from skills.Skill import *
 

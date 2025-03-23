@@ -1,6 +1,6 @@
 import time
 from entities.Creature import Creature, Size
-from CreatureTemplate import CreatureTemplate
+from entities.CreatureTemplate import CreatureTemplate
 from entities.Trait import LivingTrait
 from skills.Skill import SkillEnum
 

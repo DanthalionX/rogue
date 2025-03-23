@@ -2,7 +2,7 @@
 from enum import Enum
 from entities.Trait import *
 from effects.StatusEffect import *
-from Element import *
+from entities.Element import *
 import random
 
 class SkillType(Enum):

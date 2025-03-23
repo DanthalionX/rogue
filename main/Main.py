@@ -1,6 +1,6 @@
 
 from entities.Creature import Creature
-from CreatureTemplate import CreatureTemplate
+from entities.CreatureTemplate import CreatureTemplate
 
 class Main:
     @staticmethod

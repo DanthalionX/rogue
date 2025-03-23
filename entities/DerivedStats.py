@@ -1,4 +1,4 @@
-from Element import *
+from entities.Element import *
 
 class DerivedStats:
     def __init__(self, creature, size):

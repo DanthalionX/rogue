@@ -1,4 +1,4 @@
-from Element import *
+from entities.Element import *
 from enum import Enum
 
 # Enum for Status Effects

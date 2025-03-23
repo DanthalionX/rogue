@@ -1,9 +1,9 @@
 import time
 from entities.Creature import Creature
-from CreatureTemplate import CreatureTemplate
+from entities.CreatureTemplate import CreatureTemplate
 from skills.Skill import SkillEnum
 from entities.Trait import TraitEnum
-from Element import ElementEnum
+from entities.Element import ElementEnum
 
 def main():
     # Création d'une créature healer avec holymancy et heal

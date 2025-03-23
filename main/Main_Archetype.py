@@ -1,5 +1,5 @@
 
-from Archetype_Loader import ArchetypeLoader
+from entities.Archetype_Loader import ArchetypeLoader
 from entities.Creature import Creature
 
 def main():

@@ -1,6 +1,6 @@
-from utils import generer_nom_aleatoire
+from utils.utils import generer_nom_aleatoire
 from enum import Enum
-from Element import *
+from entities.Element import *
 import random
 
 class TraitType(Enum):

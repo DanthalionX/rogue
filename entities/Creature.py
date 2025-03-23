@@ -1,12 +1,12 @@
 
-from Element import *
+from entities.Element import *
 from entities.Trait import *
 from skills.Skill import *
-from DerivedStats import *
-from CreatureTemplate import *
-from utils import generer_nom_espece,Size
+from entities.DerivedStats import *
+from entities.CreatureTemplate import *
+from utils.utils import generer_nom_espece,Size
 from enum import Enum
-from StatusEffectManager import StatusEffectManager
+from entities.effects.StatusEffectManager import StatusEffectManager
 
 import random
 
@@ -41,7 +41,7 @@ class Creature(BaseStats, DerivedStats):
 
     @classmethod
     def generer_aleatoire(cls, template=CreatureTemplate(), controller_class=None):
-        from utils import generer_nom_espece
+        from utils.utils import generer_nom_espece
         from entities.Trait import TraitEnum, TraitType
 
         constitution = template.constitution if template and template.constitution is not None else random.randint(5, 20)
